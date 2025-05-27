@@ -2,10 +2,9 @@ package com.l0123137.tesprojek.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Turquoise = Color(0xFF3bcfc9)
+val SteelBlue = Color(0xFF1986af)
+val DarkCyan = Color (0xFF0c3d4a)
+val TealBlue = Color (0xFF377684)
+val RoyalBlue = Color (0xFF1061b0)
+val CoralRed = Color (0xFFff5757)
