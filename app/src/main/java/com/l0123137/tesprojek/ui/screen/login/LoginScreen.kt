@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.l0123137.tesprojek.R
 
+
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostController) {
     val username = viewModel.username
@@ -82,7 +83,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostC
             Button(
                 onClick = {
                     viewModel.onLoginClick {
-                        navController.navigate("main") {
+                        navController.navigate("scaffold") {
                             popUpTo("login") { inclusive = true }
                         }
                     }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.l0123137.tesprojek.ui.screen.eventList.ListScreen
 import com.l0123137.tesprojek.ui.screen.login.LoginScreen
 import com.l0123137.tesprojek.ui.screen.signup.SignUpScreen
 
@@ -18,8 +17,8 @@ fun AppNavigator() {
         composable("signup") {
             SignUpScreen(navController = navController)
         }
-        composable("main") {
-            ListScreen()
+        composable("scaffold") {
+            MainScaffold(parentNavController = navController)
         }
     }
 }
