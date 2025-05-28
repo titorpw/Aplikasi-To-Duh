@@ -7,19 +7,62 @@ import androidx.lifecycle.ViewModel
 
 class CreateEventViewModel : ViewModel() {
     var eventName by mutableStateOf("")
+        private set
+
     var selectedCategory by mutableStateOf("")
+        private set
+
     var date by mutableStateOf("")
+        private set
+
     var description by mutableStateOf("")
+        private set
+
     var showValidationError by mutableStateOf(false)
+        private set
 
     val categoryList = listOf("Meeting", "Task", "Social", "Travelling")
 
-    fun onSubmit() {
-        if (eventName.isBlank() || selectedCategory.isBlank() || date.isBlank()) {
-            showValidationError = true
-        } else {
-            println("Event created: $eventName, $selectedCategory, $date, $description")
-            showValidationError = false
+    // Update functions for each input field
+    fun updateEventName(newName: String) {
+        eventName = newName
+    }
+
+    fun updateCategory(newCategory: String) {
+        selectedCategory = newCategory
+    }
+
+    fun updateDate(newDate: String) {
+        date = newDate
+    }
+
+    fun updateDescription(newDescription: String) {
+        description = newDescription
+    }
+
+    fun validateInput(): Boolean {
+        showValidationError = eventName.isBlank() || selectedCategory.isBlank() || date.isBlank()
+        return !showValidationError
+    }
+
+    fun resetForm() {
+        eventName = ""
+        selectedCategory = ""
+        date = ""
+        description = ""
+        showValidationError = false
+    }
+
+    fun onSubmit(eventViewModel: EventViewModel) {
+        if (validateInput()) {
+            val newEvent = Event(
+                name = eventName,
+                category = selectedCategory,
+                date = date,
+                description = description
+            )
+            eventViewModel.addEvent(newEvent)
+            resetForm()
         }
     }
 }

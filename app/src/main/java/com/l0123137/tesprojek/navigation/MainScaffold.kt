@@ -16,18 +16,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.l0123137.tesprojek.R
 import com.l0123137.tesprojek.ui.screen.createEvent.CreateEventScreen
+import com.l0123137.tesprojek.ui.screen.createEvent.EventViewModel
 import com.l0123137.tesprojek.ui.screen.eventList.ListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(parentNavController: NavHostController) {
     val internalNavController = rememberNavController()
+    val eventViewModel: EventViewModel = viewModel()
+
     Scaffold(
         topBar = {
             Surface(
@@ -64,10 +68,10 @@ fun MainScaffold(parentNavController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("main") {
-                ListScreen(internalNavController)
+                ListScreen(internalNavController, eventViewModel)
             }
             composable("create_event") {
-                CreateEventScreen(internalNavController)
+                CreateEventScreen(internalNavController, eventViewModel = eventViewModel)
             }
         }
     }
