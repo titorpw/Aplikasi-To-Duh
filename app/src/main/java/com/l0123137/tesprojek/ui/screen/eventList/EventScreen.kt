@@ -32,7 +32,7 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
             text = "Event List",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF0055CC),
+            color = MaterialTheme.colorScheme.secondaryContainer,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -48,7 +48,8 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
                     EventItem(
                         title = event.name,
                         date = event.date,
-                        onEdit = { /* TODO: Implement edit screen navigation */ },
+                        isCompleted = event.isCompleted,
+                        onEdit = { parentNavController.navigate("edit_event/${event.id}") },
                         onDelete = { viewModel.deleteEventById(event.id) },
                         onMarkAsDone = { viewModel.toggleCompletedById(event.id) }
                     )
@@ -73,7 +74,7 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
 @Composable
 fun SectionTitle(title: String) {
     Surface(
-        color = Color(0xFFD0E7FF),
+        color = MaterialTheme.colorScheme.primaryContainer,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
@@ -89,7 +90,7 @@ fun SectionTitle(title: String) {
                 text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = Color(0xFF003366),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -100,48 +101,88 @@ fun SectionTitle(title: String) {
 fun EventItem(
     title: String,
     date: String,
+    isCompleted: Boolean,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onMarkAsDone: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFB2F5F0)),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(date, fontSize = 12.sp, color = Color.Gray)
-                }
-                IconButton(onClick = onEdit) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_edit),
-                        contentDescription = "Edit",
-                        tint = Color.Black,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_delete),
-                        contentDescription = "Delete",
-                        tint = Color.Black,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-            Button(
-                onClick = onMarkAsDone,
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8B5CF6)),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.End)
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Mark as Done", color = Color.White, fontSize = 12.sp)
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_calendar),
+                            contentDescription = "Date",
+                            tint =  MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(end = 4.dp)
+                        )
+                        Text(
+                            text = date,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    IconButton(
+                        onClick = onEdit,
+                        enabled = !isCompleted
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_edit),
+                            contentDescription = "Edit",
+                            tint = Color(0xFF333333),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onDelete,
+                        enabled = !isCompleted
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_delete),
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    IconButton(onClick = onMarkAsDone) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isCompleted) R.drawable.icon_checkbox_checked
+                                else R.drawable.icon_checkbox_unchecked
+                            ),
+                            contentDescription = if (isCompleted) "Completed" else "Mark as Done",
+                            tint = if (isCompleted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -151,13 +192,13 @@ fun EventItem(
 fun CompletedEventItem(title: String, date: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF0c3d4a)),
+        colors = CardDefaults.cardColors(containerColor = 	MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-            Text(date, fontSize = 12.sp, color = Color.Gray)
+            Text(date, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }

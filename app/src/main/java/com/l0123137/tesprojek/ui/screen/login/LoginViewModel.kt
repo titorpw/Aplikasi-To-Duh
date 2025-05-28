@@ -1,12 +1,18 @@
 package com.l0123137.tesprojek.ui.screen.login
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.l0123137.tesprojek.data.UserSession
+import androidx.lifecycle.viewModelScope
+import com.l0123137.tesprojek.data.UserPreferences
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val userPreferences: UserPreferences
+) : ViewModel() {
 
     var username by mutableStateOf("")
     var password by mutableStateOf("")
@@ -14,24 +20,32 @@ class LoginViewModel : ViewModel() {
     var errorMessage by mutableStateOf("")
 
     fun onLoginClick(onSuccess: () -> Unit) {
-        when {
-            username.isBlank() -> {
-                showError = true
-                errorMessage = "Username is required"
-            }
-            password.isBlank() -> {
-                showError = true
-                errorMessage = "Password is required"
-            }
-            username != UserSession.registeredUsername || password != UserSession.registeredPassword -> {
+        showError = false
+        errorMessage = ""
+
+        if (username.isBlank()) {
+            showError = true
+            errorMessage = "Username is required"
+            return
+        }
+
+        if (password.isBlank()) {
+            showError = true
+            errorMessage = "Password is required"
+            return
+        }
+
+        viewModelScope.launch {
+            val savedUsername = userPreferences.usernameFlow.first() ?: ""
+            val savedPassword = userPreferences.passwordFlow.first() ?: ""
+
+            if (username != savedUsername || password != savedPassword) {
                 showError = true
                 errorMessage = "Username and Password don’t match"
-            }
-            else -> {
+            } else {
                 showError = false
                 onSuccess()
             }
         }
     }
-
 }

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -45,7 +46,7 @@ fun CustomPasswordField(
                 Text(
                     text = "$label*",
                     fontSize = 10.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -63,7 +64,7 @@ fun CustomPasswordField(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(64.dp),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF6EE0E0),
@@ -78,7 +79,7 @@ fun CustomPasswordField(
         if (error) {
             Text(
                 text = if (label == "Verify Password") "Password doesn’t match" else "$label is required",
-                color = Color.Red,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 10.sp,
                 modifier = Modifier.padding(top = 2.dp)
             )

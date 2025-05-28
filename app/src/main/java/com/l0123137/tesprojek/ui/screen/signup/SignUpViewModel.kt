@@ -4,9 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import java.time.LocalDate
+import androidx.lifecycle.viewModelScope
+import com.l0123137.tesprojek.data.UserPreferences
+import kotlinx.coroutines.launch
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel(
+    private val userPreferences: UserPreferences
+) : ViewModel() {
 
     var uiState by mutableStateOf(SignUpState())
         private set
@@ -23,7 +27,7 @@ class SignUpViewModel : ViewModel() {
         uiState = uiState.copy(username = value, usernameError = value.isBlank())
     }
 
-    fun onBornDateChanged(date: LocalDate) {
+    fun onBornDateChanged(date: java.time.LocalDate) {
         uiState = uiState.copy(bornDate = date, bornDateError = false)
     }
 
@@ -38,7 +42,10 @@ class SignUpViewModel : ViewModel() {
         )
     }
 
-    fun onSubmit(): Boolean {
+    fun onSubmit(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
         val isValid = listOf(
             uiState.firstName.isNotBlank(),
             uiState.lastName.isNotBlank(),
@@ -55,8 +62,17 @@ class SignUpViewModel : ViewModel() {
             uiState = uiState.copy(bornDateError = uiState.bornDate == null)
             onPasswordChange(uiState.password)
             onConfirmPasswordChange(uiState.confirmPassword)
+            onError("Please fill all fields correctly.")
+            return
         }
 
-        return isValid
+        viewModelScope.launch {
+            try {
+                userPreferences.saveUser(uiState.username, uiState.password)
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Failed to save user data: ${e.message}")
+            }
+        }
     }
 }

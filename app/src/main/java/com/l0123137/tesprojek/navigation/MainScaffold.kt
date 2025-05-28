@@ -18,17 +18,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.l0123137.tesprojek.R
 import com.l0123137.tesprojek.ui.screen.createEvent.CreateEventScreen
 import com.l0123137.tesprojek.ui.screen.createEvent.EventViewModel
+import com.l0123137.tesprojek.ui.screen.editEvent.EditEventScreen
 import com.l0123137.tesprojek.ui.screen.eventList.ListScreen
+import com.l0123137.tesprojek.ui.screen.search.SearchScreen
+import com.l0123137.tesprojek.ui.screen.settings.SettingsScreen
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScaffold(parentNavController: NavHostController) {
+fun MainScaffold(
+    parentNavController: NavHostController,
+    darkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit
+) {
     val internalNavController = rememberNavController()
     val eventViewModel: EventViewModel = viewModel()
 
@@ -72,6 +82,38 @@ fun MainScaffold(parentNavController: NavHostController) {
             }
             composable("create_event") {
                 CreateEventScreen(internalNavController, eventViewModel = eventViewModel)
+            }
+            composable(
+                "edit_event/{eventId}",
+                arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val eventId = backStackEntry.arguments?.getString("eventId")
+                val event = eventViewModel.eventList.find { it.id == eventId }
+
+                if (event != null) {
+                    EditEventScreen(
+                        navController = internalNavController,
+                        event = event,
+                        onUpdateEvent = { updatedEvent ->
+                            eventViewModel.updateEvent(updatedEvent)
+                            internalNavController.popBackStack()
+                        }
+                    )
+                }
+            }
+            composable("settings") {
+                SettingsScreen(
+                    navController = internalNavController,
+                    parentNavController = parentNavController,
+                    darkMode = darkMode,
+                    onToggleDarkMode = onToggleDarkMode
+                )
+            }
+            composable("search") {
+                SearchScreen(
+                    navController = internalNavController,
+                    eventViewModel = eventViewModel
+                )
             }
         }
     }

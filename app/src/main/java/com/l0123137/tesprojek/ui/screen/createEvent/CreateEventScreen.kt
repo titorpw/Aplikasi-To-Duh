@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import java.util.Calendar
 import android.app.DatePickerDialog
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +42,7 @@ fun CreateEventScreen(
             DatePickerDialog(
                 context,
                 { _, year, month, dayOfMonth ->
-                    val formattedDate = "%04d-%02d-%02d".format(year, month + 1, dayOfMonth)
+                    val formattedDate = "%02d-%02d-%04d".format(dayOfMonth, month + 1, year)
                     createEventViewModel.updateDate(formattedDate)
                     showDatePicker = false
                 },
@@ -62,8 +63,9 @@ fun CreateEventScreen(
     ) {
         Text(
             text = "Create Event",
-            style = MaterialTheme.typography.headlineSmall,
-            color = Color(0xFF0050B3),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF0055CC),
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -178,4 +180,3 @@ fun CreateEventScreen(
         }
     }
 }
-

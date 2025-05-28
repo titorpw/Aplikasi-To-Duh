@@ -64,7 +64,7 @@ fun CustomDatePicker(
         if (showError) {
             Text(
                 text = "$label is required",
-                color = Color.Red,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(top = 2.dp)
             )

@@ -19,6 +19,7 @@ private val DarkColorScheme = darkColorScheme(
     onPrimaryContainer = Color.White,
     secondary = TealBlue,
     onSecondary = Color.White,
+    tertiary = md_theme_light_tertiary,
     background = DarkCyan,
     onBackground = Color.Black,
     surface = DarkCyan,
@@ -31,9 +32,11 @@ private val LightColorScheme = lightColorScheme(
     primary = Turquoise,
     onPrimary = Color.White,
     primaryContainer = SteelBlue,
+    secondaryContainer = RoyalBlue,
     onPrimaryContainer = Color.White,
     secondary = TealBlue,
     onSecondary = Color.White,
+    tertiary = md_theme_dark_tertiary,
     background = Color.White,
     onBackground = DarkCyan,
     surface = Color.White,
@@ -45,8 +48,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun TesProjekTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

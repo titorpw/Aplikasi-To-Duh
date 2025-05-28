@@ -5,22 +5,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.l0123137.tesprojek.R
-
+import com.l0123137.tesprojek.data.UserPreferences
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostController) {
+fun LoginScreen(
+    navController: NavHostController,
+    userPreferences: UserPreferences
+) {
+    val viewModel = remember { LoginViewModel(userPreferences) }
+
     val username = viewModel.username
     val password = viewModel.password
     val showError = viewModel.showError
@@ -55,7 +61,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostC
             )
 
             if (showError && username.isBlank()) {
-                Text("Username is required", color = Color.Red, fontSize = 12.sp)
+                Text("Username is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -71,7 +77,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostC
             )
 
             if (showError && password.isBlank()) {
-                Text("Password is required", color = Color.Red, fontSize = 12.sp)
+                Text("Password is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
             }
 
             if (showError && username.isNotBlank() && password.isNotBlank()) {
@@ -88,7 +94,9 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostC
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1061b0)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -100,7 +108,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavHostC
             TextButton(onClick = {
                 navController.navigate("signup")
             }) {
-                Text("Not on To-Duh yet? Sign up here!", fontSize = 12.sp, color = Color.Black)
+                Text(
+                    "Not on To-Duh yet? Sign up here!",
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }

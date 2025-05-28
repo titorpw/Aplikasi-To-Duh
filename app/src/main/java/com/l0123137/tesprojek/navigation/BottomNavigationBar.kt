@@ -49,7 +49,13 @@ fun BottomNavigationBar(navController: NavController) {
             }
 
             IconButton(onClick = {
-                // Navigasi ke "search" screen jika ada
+                navController.navigate("search") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_search),
@@ -60,7 +66,9 @@ fun BottomNavigationBar(navController: NavController) {
             }
 
             IconButton(onClick = {
-                // Navigasi ke "settings" screen jika ada
+                navController.navigate("settings") {
+                    launchSingleTop = true
+                }
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_settings),
