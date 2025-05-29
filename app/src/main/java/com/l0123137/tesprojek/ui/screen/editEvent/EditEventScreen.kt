@@ -1,6 +1,7 @@
 package com.l0123137.tesprojek.ui.screen.editEvent
 
 import android.app.DatePickerDialog
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,7 +77,9 @@ fun EditEventScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             "Edit Event",
@@ -204,7 +207,7 @@ fun EditEventScreen(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             )
         ) {
-            Text("Edit")
+            Text("Edit", color = Color.White)
         }
     }
 }

@@ -30,7 +30,7 @@ fun BottomNavigationBar(navController: NavController) {
                     painter = painterResource(id = R.drawable.icon_list),
                     contentDescription = "List",
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(100.dp)
                 )
             }
 

@@ -44,21 +44,21 @@ fun CustomDatePicker(
         OutlinedTextField(
             value = selectedDate?.format(DateTimeFormatter.ofPattern("dd / MM / yyyy")) ?: "",
             onValueChange = {},
-            label = { Text("$label*") },
+            label = { Text("$label*", color = MaterialTheme.colorScheme.onPrimary) },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = {
                     datePickerDialog.show()
                 }) {
-                    Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "Select Date")
+                    Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "Select Date", tint = MaterialTheme.colorScheme.onPrimary)
                 }
             },
             isError = showError,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF6EE0E0),
-                unfocusedContainerColor = Color(0xFF6EE0E0),
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
             )
         )
         if (showError) {

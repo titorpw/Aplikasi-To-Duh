@@ -1,9 +1,11 @@
 package com.l0123137.tesprojek.ui.screen.signup
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +47,7 @@ fun SignUpScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -159,13 +162,13 @@ fun SignUpScreen(
             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
         ) {
-            Text(text = "Sign up")
+            Text(text = "Sign up", color = MaterialTheme.colorScheme.onPrimaryContainer)
         }
 
         TextButton(onClick = { navController.navigate("login") }) {
             Text(
                 text = "Already have an account? Login here!",
-                fontSize = 12.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }

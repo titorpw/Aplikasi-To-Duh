@@ -1,6 +1,7 @@
 package com.l0123137.tesprojek.ui.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -35,6 +36,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 32.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -100,7 +102,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Log in")
+                Text("Log in", color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -109,7 +111,7 @@ fun LoginScreen(
                 navController.navigate("signup")
             }) {
                 Text(
-                    "Not on To-Duh yet? Sign up here!",
+                    "Not on To-Duh! yet? Sign up here!",
                     fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )

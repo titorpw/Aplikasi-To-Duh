@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,6 +17,7 @@ import androidx.navigation.NavController
 import java.util.Calendar
 import android.app.DatePickerDialog
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,8 +78,8 @@ fun CreateEventScreen(
             label = { Text("Event*", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF3ED8D8),
-                unfocusedContainerColor = Color(0xFF3ED8D8)
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary
             )
         )
 
@@ -142,8 +142,8 @@ fun CreateEventScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF3ED8D8),
-                unfocusedContainerColor = Color(0xFF3ED8D8)
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary
             ),
             readOnly = true
         )
@@ -156,15 +156,15 @@ fun CreateEventScreen(
             label = { Text("Description", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF3ED8D8),
-                unfocusedContainerColor = Color(0xFF3ED8D8)
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary
             )
         )
 
         if (showValidationError) {
             Text(
                 text = "*This field is required",
-                color = Color.Red,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(top = 4.dp)
             )
@@ -186,7 +186,7 @@ fun CreateEventScreen(
                 containerColor = Color(0xFF007ACC)
             )
         ) {
-            Text("Create")
+            Text("Create", color = Color.White)
         }
     }
 }

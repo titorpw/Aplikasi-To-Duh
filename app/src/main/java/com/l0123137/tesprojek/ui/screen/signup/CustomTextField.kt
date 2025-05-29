@@ -26,14 +26,14 @@ fun CustomTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text("$label*") },
+            label = { Text("$label*", color = MaterialTheme.colorScheme.onPrimary) },
             isError = error,
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF6EE0E0),
-                unfocusedContainerColor = Color(0xFF6EE0E0),
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
             )
         )
         if (error) {

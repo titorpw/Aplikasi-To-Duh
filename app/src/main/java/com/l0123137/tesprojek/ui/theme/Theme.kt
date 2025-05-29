@@ -25,13 +25,13 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = Color.Cyan,
     surface = DarkCyan,
     onSurface = Color.White,
-    error = Color.Yellow,
+    error = Color.Red,
     onError = Color.Black,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Turquoise,
-    onPrimary = Color.White,
+    onPrimary = DarkCyan,
     primaryContainer = SteelBlue,
     secondaryContainer = RoyalBlue,
     onPrimaryContainer = Color.White,

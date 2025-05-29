@@ -124,7 +124,7 @@ fun SettingsScreen(
                 text = "About Us",
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.secondary
             )
         }
 
@@ -133,7 +133,7 @@ fun SettingsScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF3bcfc9))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
         ) {
             Text(
                 text = "To-Duh adalah aplikasi manajemen event yang membantu pengguna mengatur agenda secara terorganisir untuk meningkatkan produktivitas. Dengan antarmuka yang intuitif dan mudah diakses, aplikasi ini cocok digunakan dalam konteks personal maupun profesional.",

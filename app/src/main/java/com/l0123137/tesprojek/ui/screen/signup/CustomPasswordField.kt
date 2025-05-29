@@ -45,7 +45,7 @@ fun CustomPasswordField(
             label = {
                 Text(
                     text = "$label*",
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -58,7 +58,8 @@ fun CustomPasswordField(
                 IconButton(onClick = { isVisible = !isVisible }) {
                     Icon(
                         imageVector = if (isVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = if (isVisible) "Hide password" else "Show password"
+                        contentDescription = if (isVisible) "Hide password" else "Show password",
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             },
@@ -67,12 +68,10 @@ fun CustomPasswordField(
                 .height(64.dp),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF6EE0E0),
-                unfocusedContainerColor = Color(0xFF6EE0E0),
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedBorderColor = Color.DarkGray,
                 unfocusedBorderColor = Color.Gray,
-                errorBorderColor = Color.Red,
-                errorContainerColor = Color(0xFFFFEAEA)
             )
         )
 
@@ -80,7 +79,7 @@ fun CustomPasswordField(
             Text(
                 text = if (label == "Verify Password") "Password doesn’t match" else "$label is required",
                 color = MaterialTheme.colorScheme.error,
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 modifier = Modifier.padding(top = 2.dp)
             )
         }
