@@ -32,16 +32,16 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(46.dp))
 
         Text(
             text = "Settings",
             fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF0055CC),
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.secondaryContainer,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -58,7 +58,8 @@ fun SettingsScreen(
             Text(
                 text = "Mode",
                 style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary
             )
             Spacer(Modifier.width(10.dp))
 
@@ -97,12 +98,13 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Icon(Icons.Default.Logout, contentDescription = "Logout", tint = Color(0xFF0A3D4F))
+            Icon(Icons.Default.Logout, contentDescription = "Logout", tint = MaterialTheme.colorScheme.secondary)
             Spacer(Modifier.width(5.dp))
             Text(
                 text = "Logout",
                 style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary
             )
         }
 
@@ -116,12 +118,13 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Icon(Icons.Default.Info, contentDescription = "About Us", tint = Color(0xFF0A3D4F))
+            Icon(Icons.Default.Info, contentDescription = "About Us", tint = MaterialTheme.colorScheme.secondary)
             Spacer(Modifier.width(8.dp))
             Text(
                 text = "About Us",
                 style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
 

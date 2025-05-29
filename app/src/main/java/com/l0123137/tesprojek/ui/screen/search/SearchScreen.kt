@@ -24,7 +24,7 @@ fun SearchScreen(
         }
     } else emptyList()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(32.dp)) {
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },

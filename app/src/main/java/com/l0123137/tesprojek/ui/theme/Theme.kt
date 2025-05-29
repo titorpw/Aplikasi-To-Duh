@@ -14,17 +14,18 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Turquoise,
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     primaryContainer = SteelBlue,
-    onPrimaryContainer = Color.White,
-    secondary = TealBlue,
+    secondaryContainer = Color.Cyan,
+    onPrimaryContainer = DarkCyan,
+    secondary = Color.Cyan,
     onSecondary = Color.White,
     tertiary = md_theme_light_tertiary,
     background = DarkCyan,
-    onBackground = Color.Black,
+    onBackground = Color.Cyan,
     surface = DarkCyan,
     onSurface = Color.White,
-    error = CoralRed,
+    error = Color.Yellow,
     onError = Color.Black,
 )
 
@@ -63,7 +64,7 @@ fun TesProjekTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
@@ -47,7 +48,7 @@ fun MainScaffold(
             Surface(
                 shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp),
                 shadowElevation = 4.dp,
-                color = Color(0xFF0A3D4F)
+                color = MaterialTheme.colorScheme.onBackground
             ) {
                 TopAppBar(
                     title = {

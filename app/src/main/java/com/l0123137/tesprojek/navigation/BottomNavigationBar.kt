@@ -5,7 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -14,8 +13,8 @@ import com.l0123137.tesprojek.R
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     BottomAppBar(
-        containerColor = Color(0xFF0A3D4F),
-        contentColor = Color.White
+        containerColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -30,7 +29,7 @@ fun BottomNavigationBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_list),
                     contentDescription = "List",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -43,7 +42,7 @@ fun BottomNavigationBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
                     contentDescription = "Add",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -60,7 +59,7 @@ fun BottomNavigationBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_search),
                     contentDescription = "Search",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -73,7 +72,7 @@ fun BottomNavigationBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_settings),
                     contentDescription = "Settings",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(40.dp)
                 )
             }

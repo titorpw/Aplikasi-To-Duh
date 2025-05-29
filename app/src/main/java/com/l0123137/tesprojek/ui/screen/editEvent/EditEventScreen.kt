@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -80,11 +81,13 @@ fun EditEventScreen(
         Text(
             "Edit Event",
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color(0xFF0055CC),
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(32.dp))
 
         OutlinedTextField(
             value = name,

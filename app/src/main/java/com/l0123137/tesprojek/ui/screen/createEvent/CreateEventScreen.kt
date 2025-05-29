@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import java.util.Calendar
 import android.app.DatePickerDialog
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,18 +62,20 @@ fun CreateEventScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.height(32.dp))
+
         Text(
             text = "Create Event",
             fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF0055CC),
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.secondaryContainer,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         OutlinedTextField(
             value = eventName,
             onValueChange = { createEventViewModel.updateEventName(it) },
-            label = { Text("Event*") },
+            label = { Text("Event*", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF3ED8D8),
@@ -90,14 +93,20 @@ fun CreateEventScreen(
                 value = category,
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Category*") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                label = { Text("Category*", color = MaterialTheme.colorScheme.onPrimary) },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "dropdown arrow",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFF3ED8D8),
-                    unfocusedContainerColor = Color(0xFF3ED8D8)
+                    focusedContainerColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -122,12 +131,13 @@ fun CreateEventScreen(
         OutlinedTextField(
             value = date,
             onValueChange = {},
-            label = { Text("Date*") },
+            label = { Text("Date*", color = MaterialTheme.colorScheme.onPrimary) },
             trailingIcon = {
                 Icon(
                     Icons.Default.CalendarToday,
                     contentDescription = "calendar",
-                    modifier = Modifier.clickable { showDatePicker = true }
+                    modifier = Modifier.clickable { showDatePicker = true },
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             modifier = Modifier.fillMaxWidth(),
@@ -143,7 +153,7 @@ fun CreateEventScreen(
         OutlinedTextField(
             value = description,
             onValueChange = { createEventViewModel.updateDescription(it) },
-            label = { Text("Description") },
+            label = { Text("Description", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF3ED8D8),

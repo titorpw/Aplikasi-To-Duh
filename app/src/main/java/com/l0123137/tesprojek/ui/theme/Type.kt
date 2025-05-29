@@ -1,34 +1,32 @@
 package com.l0123137.tesprojek.ui.theme
 
-import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.l0123137.tesprojek.R
+import androidx.compose.material3.Typography
 
-// Set of Material typography styles to start with
-val Typography = Typography(
+val CreatoDisplay = FontFamily(
+    Font(R.font.creato_display_thin, FontWeight.Thin),
+    Font(R.font.creato_display_light, FontWeight.Light),
+    Font(R.font.creato_display_regular, FontWeight.Normal),
+    Font(R.font.creato_display_medium, FontWeight.Medium),
+    Font(R.font.creato_display_bold, FontWeight.Bold),
+    Font(R.font.creato_display_black, FontWeight.Black),
+    Font(R.font.creato_display_extrabold, FontWeight.ExtraBold),
+)
+
+val AppTypography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = CreatoDisplay,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+        fontSize = 16.sp
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+    titleLarge = TextStyle(
+        fontFamily = CreatoDisplay,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp
     )
-    */
 )

@@ -28,10 +28,12 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
             .fillMaxSize()
             .padding(12.dp)
     ) {
+        Spacer(Modifier.height(32.dp))
+
         Text(
             text = "Event List",
             fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.secondaryContainer,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -42,6 +44,8 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
         ) {
             if (upcomingEvents.isNotEmpty()) {
                 item {
+                    Spacer(Modifier.height(32.dp))
+
                     SectionTitle("Upcoming")
                 }
                 items(upcomingEvents) { event ->
@@ -58,6 +62,8 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
 
             if (completedEvents.isNotEmpty()) {
                 item {
+                    Spacer(Modifier.height(32.dp))
+
                     SectionTitle("Completed")
                 }
                 items(completedEvents) { event ->
@@ -154,7 +160,7 @@ fun EventItem(
                         Icon(
                             painter = painterResource(id = R.drawable.icon_edit),
                             contentDescription = "Edit",
-                            tint = Color(0xFF333333),
+                            tint = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
