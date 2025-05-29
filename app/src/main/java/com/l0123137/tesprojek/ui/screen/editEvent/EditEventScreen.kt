@@ -86,7 +86,7 @@ fun EditEventScreen(
             style = MaterialTheme.typography.headlineSmall,
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = Color(0xFF0055CC),
+            color = MaterialTheme.colorScheme.secondaryContainer,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -204,7 +204,7 @@ fun EditEventScreen(
                 .align(Alignment.CenterHorizontally)
                 .width(120.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = Color(0xFF007ACC)
             )
         ) {
             Text("Edit", color = Color.White)
