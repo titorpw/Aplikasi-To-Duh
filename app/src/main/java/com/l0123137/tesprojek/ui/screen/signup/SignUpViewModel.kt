@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.l0123137.tesprojek.data.UserPreferences
 import kotlinx.coroutines.launch
+import com.l0123137.tesprojek.ui.screen.signup.SignUpState
 
 class SignUpViewModel(
     private val userPreferences: UserPreferences

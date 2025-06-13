@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.room.compiler)
+    val room_version = "2.7.1"
 
     implementation (libs.androidx.datastore.preferences)
     implementation (libs.androidx.material.icons.extended)
@@ -56,6 +58,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation ("org.mindrot:jbcrypt:0.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

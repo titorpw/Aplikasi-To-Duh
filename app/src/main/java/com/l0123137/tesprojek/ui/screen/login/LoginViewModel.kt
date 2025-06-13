@@ -20,6 +20,7 @@ class LoginViewModel(
     var errorMessage by mutableStateOf("")
 
     fun onLoginClick(onSuccess: () -> Unit) {
+
         showError = false
         errorMessage = ""
 
