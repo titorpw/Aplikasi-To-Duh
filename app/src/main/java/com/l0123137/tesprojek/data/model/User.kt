@@ -3,8 +3,12 @@ package com.l0123137.tesprojek.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Index
 
-@Entity(tableName = "users")
+@Entity(
+    tableName = "users",
+    indices = [Index(value = ["username"], unique = true)]
+)
 data class User(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "first_name") val firstName: String,

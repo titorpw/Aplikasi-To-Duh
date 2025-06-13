@@ -19,15 +19,15 @@ interface EventDao {
     @Delete
     suspend fun deleteEvent(event: Event)
 
-    @Query("SELECT * FROM events WHERE id = :eventId")
-    suspend fun getEventById(eventId: Long): Event?
-
     @Query("SELECT * FROM events WHERE user_id = :userId ORDER BY date ASC")
     fun getEventsForUser(userId: Long): Flow<List<Event>>
 
     @Query("SELECT * FROM events WHERE is_complete = :isComplete")
     fun getEventsByCompletionStatus(isComplete: Boolean): Flow<List<Event>>
 
-    @Query("SELECT * FROM events")
-    fun getAllEvents(): Flow<List<Event>>
+    @Query("SELECT * FROM events WHERE category = :category AND is_complete = 0 ORDER BY date ASC")
+    fun getEventsByCategory(category: String): Flow<List<Event>>
+
+    @Query("SELECT * FROM events WHERE name LIKE '%' || :searchQuery || '%' COLLATE NOCASE ORDER BY date ASC")
+    fun searchEvents(searchQuery: String): Flow<List<Event>>
 }
