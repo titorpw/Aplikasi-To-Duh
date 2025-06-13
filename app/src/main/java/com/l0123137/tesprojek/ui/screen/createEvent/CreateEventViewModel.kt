@@ -23,7 +23,6 @@ class CreateEventViewModel : ViewModel() {
 
     val categoryList = listOf("Meeting", "Task", "Social", "Travelling")
 
-    // Update functions for each input field
     fun updateEventName(newName: String) {
         eventName = newName
     }
