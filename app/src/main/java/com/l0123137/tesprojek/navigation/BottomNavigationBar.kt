@@ -35,6 +35,19 @@ fun BottomNavigationBar(navController: NavController) {
             }
 
             IconButton(onClick = {
+                navController.navigate("CalendarScreen") {
+                    launchSingleTop = true
+                }
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_calendar),
+                    contentDescription = "Calendar Event",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(80.dp)
+                )
+            }
+
+            IconButton(onClick = {
                 navController.navigate("create_event") {
                     popUpTo("main") { inclusive = false }
                 }

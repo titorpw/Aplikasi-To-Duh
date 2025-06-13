@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.l0123137.tesprojek.R
+import com.l0123137.tesprojek.ui.screen.calendar.CalendarScreen
 import com.l0123137.tesprojek.ui.screen.createEvent.CreateEventScreen
 import com.l0123137.tesprojek.ui.screen.createEvent.EventViewModel
 import com.l0123137.tesprojek.ui.screen.editEvent.EditEventScreen
@@ -83,6 +84,9 @@ fun MainScaffold(
             }
             composable("create_event") {
                 CreateEventScreen(internalNavController, eventViewModel = eventViewModel)
+            }
+            composable("CalendarScreen") {
+                CalendarScreen(internalNavController, eventViewModel = eventViewModel)
             }
             composable(
                 "edit_event/{eventId}",
