@@ -6,7 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.l0123137.tesprojek.data.dao.EventDao
 import com.l0123137.tesprojek.data.dao.UserDao
+import com.l0123137.tesprojek.data.dao.SessionDao
 import com.l0123137.tesprojek.data.model.Event
+import com.l0123137.tesprojek.data.model.Session
 import com.l0123137.tesprojek.data.model.User
 
 @Database(
@@ -17,6 +19,7 @@ import com.l0123137.tesprojek.data.model.User
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun eventDao(): EventDao
+    abstract fun sessionDao(): SessionDao
 
     companion object {
         @Volatile
@@ -29,6 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "toduh_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

@@ -1,27 +1,46 @@
 package com.l0123137.tesprojek.ui.screen.eventList
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.l0123137.tesprojek.ui.screen.createEvent.EventViewModel
 import com.l0123137.tesprojek.R
+import com.l0123137.tesprojek.ToDuhApplication
+import com.l0123137.tesprojek.data.model.Event
+import com.l0123137.tesprojek.ui.ViewModelFactory
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import com.l0123137.tesprojek.ui.screen.eventList.EventViewModel
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
-    val upcomingEvents = viewModel.getUpcomingEvents()
-    val completedEvents = viewModel.getCompletedEvents()
+fun EventScreen(navController: NavController) {
+    val application = LocalContext.current.applicationContext as ToDuhApplication
+    val viewModel: EventViewModel = viewModel(
+        factory = ViewModelFactory(
+            application.userRepository,
+            application.sessionRepository,
+            application.eventRepository
+        )
+    )
+    val uiState by viewModel.uiState.collectAsState()
+
+    val upcomingEvents = uiState.events.filter { !it.isComplete }
+    val completedEvents = uiState.events.filter { it.isComplete }
 
     Column(
         modifier = Modifier
@@ -29,7 +48,6 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
             .padding(12.dp)
     ) {
         Spacer(Modifier.height(32.dp))
-
         Text(
             text = "Event List",
             fontSize = 32.sp,
@@ -38,43 +56,52 @@ fun ListScreen(parentNavController: NavController, viewModel: EventViewModel) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (upcomingEvents.isNotEmpty()) {
-                item {
-                    Spacer(Modifier.height(32.dp))
-
-                    SectionTitle("Upcoming")
-                }
-                items(upcomingEvents) { event ->
-                    EventItem(
-                        title = event.name,
-                        date = event.date,
-                        isCompleted = event.isCompleted,
-                        onEdit = { parentNavController.navigate("edit_event/${event.id}") },
-                        onDelete = { viewModel.deleteEventById(event.id) },
-                        onMarkAsDone = { viewModel.toggleCompletedById(event.id) }
-                    )
-                }
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-
-            if (completedEvents.isNotEmpty()) {
-                item {
-                    Spacer(Modifier.height(32.dp))
-
-                    SectionTitle("Completed")
+        } else if (uiState.errorMessage != null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (upcomingEvents.isNotEmpty()) {
+                    item {
+                        Spacer(Modifier.height(32.dp))
+                        SectionTitle("Upcoming")
+                    }
+                    items(upcomingEvents, key = { it.id }) { event ->
+                        EventItem(
+                            event = event,
+                            onEdit = { navController.navigate("edit_event/${event.id}") },
+                            onDelete = { viewModel.deleteEvent(event) },
+                            onMarkAsDone = { viewModel.toggleEventCompletion(event) }
+                        )
+                    }
                 }
-                items(completedEvents) { event ->
-                    CompletedEventItem(
-                        title = event.name,
-                        date = event.date
-                    )
+
+                if (completedEvents.isNotEmpty()) {
+                    item {
+                        Spacer(Modifier.height(32.dp))
+                        SectionTitle("Completed")
+                    }
+                    items(completedEvents, key = { it.id }) { event ->
+                        CompletedEventItem(event = event)
+                    }
                 }
             }
         }
     }
+}
+
+private fun formatDate(timestamp: Long): String {
+    val instant = Instant.ofEpochMilli(timestamp)
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withZone(ZoneId.systemDefault())
+    return formatter.format(instant)
 }
 
 @Composable
@@ -105,9 +132,7 @@ fun SectionTitle(title: String) {
 
 @Composable
 fun EventItem(
-    title: String,
-    date: String,
-    isCompleted: Boolean,
+    event: Event,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onMarkAsDone: () -> Unit
@@ -125,24 +150,20 @@ fun EventItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = title,
+                        text = event.name,
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_calendar),
                             contentDescription = "Date",
-                            tint =  MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier
-                                .size(16.dp)
-                                .padding(end = 4.dp)
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp).padding(end = 4.dp)
                         )
                         Text(
-                            text = date,
+                            text = formatDate(event.date),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray
                         )
@@ -153,10 +174,7 @@ fun EventItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    IconButton(
-                        onClick = onEdit,
-                        enabled = !isCompleted
-                    ) {
+                    IconButton(onClick = onEdit, enabled = !event.isComplete) { // <-- Menggunakan isComplete
                         Icon(
                             painter = painterResource(id = R.drawable.icon_edit),
                             contentDescription = "Edit",
@@ -164,11 +182,7 @@ fun EventItem(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
-                    IconButton(
-                        onClick = onDelete,
-                        enabled = !isCompleted
-                    ) {
+                    IconButton(onClick = onDelete) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_delete),
                             contentDescription = "Delete",
@@ -176,15 +190,14 @@ fun EventItem(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
                     IconButton(onClick = onMarkAsDone) {
                         Icon(
                             painter = painterResource(
-                                id = if (isCompleted) R.drawable.icon_checkbox_checked
+                                id = if (event.isComplete) R.drawable.icon_checkbox_checked
                                 else R.drawable.icon_checkbox_unchecked
                             ),
-                            contentDescription = if (isCompleted) "Completed" else "Mark as Done",
-                            tint = if (isCompleted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.tertiary,
+                            contentDescription = if (event.isComplete) "Completed" else "Mark as Done",
+                            tint = if (event.isComplete) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -195,16 +208,16 @@ fun EventItem(
 }
 
 @Composable
-fun CompletedEventItem(title: String, date: String) {
+fun CompletedEventItem(event: Event) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = 	MaterialTheme.colorScheme.primary),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-            Text(date, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
+            Text(event.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+            Text(formatDate(event.date), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }

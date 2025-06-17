@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Update
 import androidx.room.Delete
+import androidx.room.Query
 import com.l0123137.tesprojek.data.model.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -16,4 +18,7 @@ interface UserDao {
 
     @Delete
     suspend fun deleteUser(user: User)
+
+    @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
+    fun getUserByUsername(username: String): Flow<User?>
 }

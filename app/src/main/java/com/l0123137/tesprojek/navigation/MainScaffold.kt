@@ -27,9 +27,9 @@ import androidx.navigation.navArgument
 import com.l0123137.tesprojek.R
 import com.l0123137.tesprojek.ui.screen.calendar.CalendarScreen
 import com.l0123137.tesprojek.ui.screen.createEvent.CreateEventScreen
-import com.l0123137.tesprojek.ui.screen.createEvent.EventViewModel
+import com.l0123137.tesprojek.ui.screen.eventList.EventViewModel
 import com.l0123137.tesprojek.ui.screen.editEvent.EditEventScreen
-import com.l0123137.tesprojek.ui.screen.eventList.ListScreen
+import com.l0123137.tesprojek.ui.screen.eventList.EventScreen
 import com.l0123137.tesprojek.ui.screen.search.SearchScreen
 import com.l0123137.tesprojek.ui.screen.settings.SettingsScreen
 
@@ -42,7 +42,6 @@ fun MainScaffold(
     onToggleDarkMode: (Boolean) -> Unit
 ) {
     val internalNavController = rememberNavController()
-    val eventViewModel: EventViewModel = viewModel()
 
     Scaffold(
         topBar = {
@@ -80,32 +79,21 @@ fun MainScaffold(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("main") {
-                ListScreen(internalNavController, eventViewModel)
+                EventScreen(navController = internalNavController)
             }
             composable("create_event") {
-                CreateEventScreen(internalNavController, eventViewModel = eventViewModel)
+                CreateEventScreen(navController = internalNavController)
             }
             composable("CalendarScreen") {
-                CalendarScreen(internalNavController, eventViewModel = eventViewModel)
+                CalendarScreen(navController = internalNavController)
             }
             composable(
-                "edit_event/{eventId}",
-                arguments = listOf(navArgument("eventId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val eventId = backStackEntry.arguments?.getString("eventId")
-                val event = eventViewModel.eventList.find { it.id == eventId }
-
-                if (event != null) {
-                    EditEventScreen(
-                        navController = internalNavController,
-                        event = event,
-                        onUpdateEvent = { updatedEvent ->
-                            eventViewModel.updateEvent(updatedEvent)
-                            internalNavController.popBackStack()
-                        }
-                    )
-                }
+                route = "edit_event/{eventId}",
+                arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+            ) {
+                EditEventScreen(navController = internalNavController)
             }
+
             composable("settings") {
                 SettingsScreen(
                     navController = internalNavController,
@@ -114,11 +102,9 @@ fun MainScaffold(
                     onToggleDarkMode = onToggleDarkMode
                 )
             }
+
             composable("search") {
-                SearchScreen(
-                    navController = internalNavController,
-                    eventViewModel = eventViewModel
-                )
+                SearchScreen(navController = internalNavController)
             }
         }
     }

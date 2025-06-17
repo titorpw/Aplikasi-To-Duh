@@ -19,40 +19,46 @@ import android.app.DatePickerDialog
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.l0123137.tesprojek.ToDuhApplication
+import com.l0123137.tesprojek.ui.ViewModelFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEventScreen(
     navController: NavController,
-    createEventViewModel: CreateEventViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    eventViewModel: EventViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    val eventName by createEventViewModel::eventName
-    val category by createEventViewModel::selectedCategory
-    val date by createEventViewModel::date
-    val description by createEventViewModel::description
-    val showValidationError by createEventViewModel::showValidationError
+    val application = LocalContext.current.applicationContext as ToDuhApplication
 
-    var expanded by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    var showDatePicker by remember { mutableStateOf(false) }
-    val calendar = remember { Calendar.getInstance() }
+    val viewModel: CreateEventViewModel = viewModel(
+        factory = ViewModelFactory(
+            application.userRepository,
+            application.sessionRepository,
+            application.eventRepository
+        )
+    )
 
-    LaunchedEffect(showDatePicker) {
-        if (showDatePicker) {
-            DatePickerDialog(
-                context,
-                { _, year, month, dayOfMonth ->
-                    val formattedDate = "%04d-%02d-%02d".format(year, month + 1, dayOfMonth)
-                    createEventViewModel.updateDate(formattedDate)
-                    showDatePicker = false
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+    val uiState = viewModel.uiState
+
+    LaunchedEffect(uiState.isEventSaved) {
+        if (uiState.isEventSaved) {
+            navController.popBackStack()
         }
     }
+
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            viewModel.updateDate(LocalDate.of(year, month + 1, dayOfMonth))
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
 
     Column(
         modifier = Modifier
@@ -73,8 +79,8 @@ fun CreateEventScreen(
         )
 
         OutlinedTextField(
-            value = eventName,
-            onValueChange = { createEventViewModel.updateEventName(it) },
+            value = uiState.eventName,
+            onValueChange = viewModel::updateEventName,
             label = { Text("Event*", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -85,22 +91,19 @@ fun CreateEventScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = category,
+                value = uiState.selectedCategory,
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Category*", color = MaterialTheme.colorScheme.onPrimary) },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "dropdown arrow",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                },
+                trailingIcon = { Icons.Default.ArrowDropDown.let {
+                    Icon(imageVector = it, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                } },
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -114,11 +117,11 @@ fun CreateEventScreen(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                createEventViewModel.categoryList.forEach { item ->
+                viewModel.categoryList.forEach { item ->
                     DropdownMenuItem(
                         text = { Text(item) },
                         onClick = {
-                            createEventViewModel.updateCategory(item)
+                            viewModel.updateCategory(item)
                             expanded = false
                         }
                     )
@@ -129,14 +132,14 @@ fun CreateEventScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = date,
+            value = uiState.date?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) ?: "",
             onValueChange = {},
             label = { Text("Date*", color = MaterialTheme.colorScheme.onPrimary) },
             trailingIcon = {
                 Icon(
                     Icons.Default.CalendarToday,
                     contentDescription = "calendar",
-                    modifier = Modifier.clickable { showDatePicker = true },
+                    modifier = Modifier.clickable { datePickerDialog.show() },
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
@@ -151,8 +154,8 @@ fun CreateEventScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = description,
-            onValueChange = { createEventViewModel.updateDescription(it) },
+            value = uiState.description,
+            onValueChange = viewModel::updateDescription,
             label = { Text("Description", color = MaterialTheme.colorScheme.onPrimary) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -161,9 +164,9 @@ fun CreateEventScreen(
             )
         )
 
-        if (showValidationError) {
+        uiState.errorMessage?.let { message ->
             Text(
-                text = "*This field is required",
+                text = message,
                 color = MaterialTheme.colorScheme.error,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(top = 4.dp)
@@ -173,12 +176,7 @@ fun CreateEventScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                createEventViewModel.onSubmit(eventViewModel)
-                if (!createEventViewModel.showValidationError) {
-                    navController.popBackStack()
-                }
-            },
+            onClick = { viewModel.saveEvent() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(120.dp),

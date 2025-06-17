@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.l0123137.tesprojek.data.UserPreferences
+import com.l0123137.tesprojek.data.model.User
+import com.l0123137.tesprojek.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import com.l0123137.tesprojek.ui.screen.signup.SignUpState
+import org.mindrot.jbcrypt.BCrypt
+import java.time.ZoneId
 
 class SignUpViewModel(
-    private val userPreferences: UserPreferences
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var uiState by mutableStateOf(SignUpState())
@@ -69,7 +72,15 @@ class SignUpViewModel(
 
         viewModelScope.launch {
             try {
-                userPreferences.saveUser(uiState.username, uiState.password)
+                val newUser = User(
+                    firstName = uiState.firstName,
+                    lastName = uiState.lastName,
+                    username = uiState.username,
+                    bornDate = uiState.bornDate!!.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    passwordHash = BCrypt.hashpw(uiState.password, BCrypt.gensalt())
+                )
+
+                userRepository.insertUser(newUser)
                 onSuccess()
             } catch (e: Exception) {
                 onError("Failed to save user data: ${e.message}")

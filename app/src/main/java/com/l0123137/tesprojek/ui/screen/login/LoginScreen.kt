@@ -6,32 +6,37 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.l0123137.tesprojek.R
-import com.l0123137.tesprojek.data.UserPreferences
+import com.l0123137.tesprojek.ToDuhApplication
+import com.l0123137.tesprojek.ui.ViewModelFactory
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
-    userPreferences: UserPreferences
+    navController: NavHostController
 ) {
-    val viewModel = remember { LoginViewModel(userPreferences) }
+    val application = LocalContext.current.applicationContext as ToDuhApplication
 
-    val username = viewModel.username
-    val password = viewModel.password
-    val showError = viewModel.showError
-    val errorMessage = viewModel.errorMessage
+    val viewModel: LoginViewModel = viewModel(
+        factory = ViewModelFactory(
+            application.userRepository,
+            application.sessionRepository,
+            application.eventRepository
+        )
+    )
+
+    val uiState = viewModel.uiState
 
     Box(
         modifier = Modifier
@@ -54,23 +59,19 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { viewModel.username = it },
+                value = uiState.username,
+                onValueChange = viewModel::onUsernameChange,
                 label = { Text("Username*") },
                 singleLine = true,
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (showError && username.isBlank()) {
-                Text("Username is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
-            }
-
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { viewModel.password = it },
+                value = uiState.password,
+                onValueChange = viewModel::onPasswordChange, // <-- Cara baru
                 label = { Text("Password*") },
                 singleLine = true,
                 shape = RoundedCornerShape(20.dp),
@@ -78,12 +79,14 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation()
             )
 
-            if (showError && password.isBlank()) {
-                Text("Password is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
-            }
-
-            if (showError && username.isNotBlank() && password.isNotBlank()) {
-                Text(errorMessage, color = Color.Red, fontSize = 12.sp)
+            // 4. Tampilan error yang lebih sederhana
+            uiState.errorMessage?.let { message ->
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = message,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -91,6 +94,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     viewModel.onLoginClick {
+                        // Navigasi setelah login berhasil
                         navController.navigate("scaffold") {
                             popUpTo("login") { inclusive = true }
                         }
