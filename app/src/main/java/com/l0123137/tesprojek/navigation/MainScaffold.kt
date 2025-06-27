@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,7 +26,6 @@ import androidx.navigation.navArgument
 import com.l0123137.tesprojek.R
 import com.l0123137.tesprojek.ui.screen.calendar.CalendarScreen
 import com.l0123137.tesprojek.ui.screen.createEvent.CreateEventScreen
-import com.l0123137.tesprojek.ui.screen.eventList.EventViewModel
 import com.l0123137.tesprojek.ui.screen.editEvent.EditEventScreen
 import com.l0123137.tesprojek.ui.screen.eventList.EventScreen
 import com.l0123137.tesprojek.ui.screen.search.SearchScreen

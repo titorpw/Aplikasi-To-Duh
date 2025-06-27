@@ -24,6 +24,9 @@ class EditEventViewModel(
     var uiState by mutableStateOf(EditEventState())
         private set
 
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
+
     val categoryList = listOf("Meeting", "Task", "Social", "Travelling")
 
     init {
@@ -38,7 +41,7 @@ class EditEventViewModel(
                         isLoading = false
                     )
                 } else {
-                    uiState = uiState.copy(isLoading = false, errorMessage = "Event not found.")
+                    uiState = uiState.copy(isLoading = false, errorMessage = "Event Tidak Ditemukan.")
                 }
             }
         }
@@ -59,14 +62,14 @@ class EditEventViewModel(
 
     fun updateEvent() {
         if (uiState.eventName.isBlank() || uiState.selectedCategory.isBlank() || uiState.date == null) {
-            uiState = uiState.copy(errorMessage = "Please fill all required fields.")
+            uiState = uiState.copy(errorMessage = "Field Tidak Boleh Kosong.")
             return
         }
 
         viewModelScope.launch {
             val originalEvent = eventRepository.getEventById(eventId).first()
             if (originalEvent == null) {
-                uiState = uiState.copy(errorMessage = "Error: Original event not found.")
+                uiState = uiState.copy(errorMessage = "Error: Maaf Event Tidak Ditemukan.")
                 return@launch
             }
 
@@ -82,9 +85,9 @@ class EditEventViewModel(
 
             try {
                 eventRepository.updateEvent(updatedEvent)
-                uiState = uiState.copy(isEventUpdated = true)
+                _snackbarMessage.emit("Event berhasil diupdate!")
             } catch (e: Exception) {
-                uiState = uiState.copy(errorMessage = "Failed to update event: ${e.message}")
+                uiState = uiState.copy(errorMessage = "Gagal Update Eventt: ${e.message}")
             }
         }
     }

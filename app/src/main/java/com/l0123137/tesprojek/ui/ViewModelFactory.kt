@@ -13,6 +13,7 @@ import com.l0123137.tesprojek.ui.screen.editEvent.EditEventViewModel
 import com.l0123137.tesprojek.ui.screen.eventList.EventViewModel
 import com.l0123137.tesprojek.ui.screen.login.LoginViewModel
 import com.l0123137.tesprojek.ui.screen.search.SearchViewModel
+import com.l0123137.tesprojek.ui.screen.settings.SettingsViewModel
 import com.l0123137.tesprojek.ui.screen.signup.SignUpViewModel
 
 class ViewModelFactory (
@@ -34,7 +35,7 @@ class ViewModelFactory (
                 CreateEventViewModel(sessionRepository, eventRepository) as T
             }
             modelClass.isAssignableFrom(EventViewModel::class.java) -> {
-                EventViewModel(sessionRepository, eventRepository) as T
+                EventViewModel(sessionRepository, eventRepository, userRepository) as T
             }
             modelClass.isAssignableFrom(EditEventViewModel::class.java) -> {
                 val savedStateHandle = extras.createSavedStateHandle()
@@ -45,6 +46,9 @@ class ViewModelFactory (
             }
             modelClass.isAssignableFrom(CalendarViewModel::class.java) -> {
                 CalendarViewModel(sessionRepository, eventRepository) as T
+            }
+            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
+                SettingsViewModel(sessionRepository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

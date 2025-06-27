@@ -1,21 +1,27 @@
 package com.l0123137.tesprojek.data.repository
 
-import com.l0123137.tesprojek.data.dao.SessionDao
+import com.l0123137.tesprojek.data.UserSessionManager
 import com.l0123137.tesprojek.data.model.Session
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class SessionRepository (private val sessionDao: SessionDao) {
+class SessionRepository (private val userSessionManager: UserSessionManager) {
+
+    suspend fun saveSession(userId: Long) {
+        userSessionManager.saveUserId(userId)
+    }
+
+    suspend fun clearSession() {
+        userSessionManager.clearUserId()
+    }
 
     fun getSession(): Flow<Session?> {
-        return sessionDao.getSession()
-    }
-
-    suspend fun saveLoginSession(userId: Long) {
-        val session = Session(loggedInUserId = userId)
-        sessionDao.saveSession(session)
-    }
-
-    suspend fun clearLoginSession() {
-        sessionDao.clearSession()
+        return userSessionManager.loggedInUserIdFlow.map { userId ->
+            if (userId != null) {
+                Session(loggedInUserId = userId)
+            } else {
+                null
+            }
+        }
     }
 }

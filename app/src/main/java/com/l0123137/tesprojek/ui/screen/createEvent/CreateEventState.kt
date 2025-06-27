@@ -8,5 +8,4 @@ data class CreateEventState(
     val date: LocalDate? = null,
     val description: String = "",
     val errorMessage: String? = null,
-    val isEventSaved: Boolean = false
 )

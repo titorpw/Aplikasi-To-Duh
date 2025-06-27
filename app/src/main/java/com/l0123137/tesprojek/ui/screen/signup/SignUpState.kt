@@ -15,5 +15,7 @@ data class SignUpState(
     val usernameError: Boolean = false,
     val bornDateError: Boolean = false,
     val passwordError: Boolean = false,
-    val confirmPasswordError: Boolean = false
+    val confirmPasswordError: Boolean = false,
+
+    val errorMessage: String? = null
 )

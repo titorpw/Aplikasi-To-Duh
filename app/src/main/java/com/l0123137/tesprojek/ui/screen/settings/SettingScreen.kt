@@ -19,8 +19,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.l0123137.tesprojek.R
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.l0123137.tesprojek.ToDuhApplication
+import com.l0123137.tesprojek.ui.ViewModelFactory
 
 @Composable
 fun SettingsScreen(
@@ -29,6 +33,17 @@ fun SettingsScreen(
     darkMode: Boolean,
     onToggleDarkMode: (Boolean) -> Unit
 ) {
+
+    val application = LocalContext.current.applicationContext as ToDuhApplication
+    val viewModel: SettingsViewModel = viewModel(
+        factory = ViewModelFactory(
+            userRepository = application.userRepository,
+            sessionRepository = application.sessionRepository,
+            eventRepository = application.eventRepository
+        )
+    )
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,10 +103,17 @@ fun SettingsScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { parentNavController.navigate("login") {
+                .clickable {
+
+                    // Menghapus session dari DataStore
+                    viewModel.logout()
+
+                    // Setelah sesi dihapus, baru navigasi ke halaman login
+                    parentNavController.navigate("login") {
                     popUpTo(parentNavController.graph.startDestinationId) {
                         inclusive = true
                     }
+                        launchSingleTop = true
                 }
             }
                 .padding(vertical = 0.dp),

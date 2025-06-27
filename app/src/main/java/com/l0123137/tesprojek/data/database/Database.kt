@@ -12,8 +12,8 @@ import com.l0123137.tesprojek.data.model.Session
 import com.l0123137.tesprojek.data.model.User
 
 @Database(
-    entities = [User::class, Event::class],
-    version = 1,
+    entities = [User::class, Event::class, Session::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -32,6 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "toduh_database"
                 )
+                    // Baris ini penting saat mengubah skema agar aplikasi tidak crash
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

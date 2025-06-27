@@ -24,7 +24,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import com.l0123137.tesprojek.ui.screen.eventList.EventViewModel
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,41 +44,166 @@ fun EventScreen(navController: NavController) {
             application.eventRepository
         )
     )
+
+    // Mengambil state dari ViewModel
     val uiState by viewModel.uiState.collectAsState()
+
+    val predefinedCategories = listOf("Meeting", "Task", "Social", "Travelling")
+
+    // State lokal untuk UI
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
 
     val upcomingEvents = uiState.events.filter { !it.isComplete }
     val completedEvents = uiState.events.filter { it.isComplete }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-    ) {
-        Spacer(Modifier.height(32.dp))
-        Text(
-            text = "Event List",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        if (uiState.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+    LaunchedEffect(Unit) {
+        viewModel.snackbarMessage.collectLatest { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                withDismissAction = true,
+                duration = SnackbarDuration.Long
+            )
+        }
+    }
+
+    val isDarkTheme = isSystemInDarkTheme()
+
+    val unselectedChipContainerColor = if (isDarkTheme) {
+        Color(0xFF424242)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    val unselectedChipLabelColor = MaterialTheme.colorScheme.onSurface
+
+    val chipColors = FilterChipDefaults.filterChipColors(
+        containerColor = unselectedChipContainerColor,
+        labelColor = unselectedChipLabelColor,
+        selectedContainerColor = MaterialTheme.colorScheme.primary,
+        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+    )
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Kartu Ulang Tahun
+            if (uiState.isBirthdayCardVisible) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Cake,
+                            contentDescription = "Birthday",
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Text(
+                            text = uiState.birthdayMessage ?: "",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.weight(1f)
+                        )
+                        IconButton(onClick = { viewModel.dismissBirthdayCard() }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Tutup ucapan ulang tahun",
+                                tint = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        }
+                    }
+                }
             }
-        } else if (uiState.errorMessage != null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Event List",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(16.dp))
+
+            // Filter Kategori
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                item { Spacer(modifier = Modifier.width(12.dp)) }
+                item {
+                    FilterChip(
+                        selected = selectedCategory == null,
+                        onClick = { selectedCategory = null; viewModel.setCategoryFilter(null) },
+                        label = { Text("All", fontWeight = FontWeight.Bold) },
+                        colors = chipColors
+                    )
+                }
+                items(predefinedCategories) { category ->
+                    FilterChip(
+                        selected = selectedCategory == category,
+                        onClick = { selectedCategory = category; viewModel.setCategoryFilter(category) },
+                        label = { Text(category, fontWeight = FontWeight.Bold) },
+                        colors = chipColors
+                    )
+                }
+                item { Spacer(modifier = Modifier.width(12.dp)) }
             }
-        } else {
+
+            Spacer(Modifier.height(16.dp))
+
+            // Daftar Event
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                if (uiState.isLoading) {
+                    item {
+                        Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    return@LazyColumn
+                }
+
+                if (uiState.errorMessage != null) {
+                    item {
+                        Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                    return@LazyColumn
+                }
+
+                if (uiState.events.isEmpty() && !uiState.isBirthdayCardVisible) {
+                    item {
+                        Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = "No events found.", color = Color.Gray)
+                        }
+                    }
+                    return@LazyColumn
+                }
+
                 if (upcomingEvents.isNotEmpty()) {
                     item {
-                        Spacer(Modifier.height(32.dp))
                         SectionTitle("Upcoming")
                     }
                     items(upcomingEvents, key = { it.id }) { event ->
@@ -86,7 +218,7 @@ fun EventScreen(navController: NavController) {
 
                 if (completedEvents.isNotEmpty()) {
                     item {
-                        Spacer(Modifier.height(32.dp))
+                        Spacer(Modifier.height(16.dp))
                         SectionTitle("Completed")
                     }
                     items(completedEvents, key = { it.id }) { event ->
@@ -174,7 +306,7 @@ fun EventItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    IconButton(onClick = onEdit, enabled = !event.isComplete) { // <-- Menggunakan isComplete
+                    IconButton(onClick = onEdit, enabled = !event.isComplete) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_edit),
                             contentDescription = "Edit",

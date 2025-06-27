@@ -8,6 +8,5 @@ data class EditEventState(
     val date: LocalDate? = null,
     val description: String = "",
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
-    val isEventUpdated: Boolean = false
+    val errorMessage: String? = null
 )

@@ -33,4 +33,12 @@ class EventRepository (private val eventDao: EventDao) {
     fun getEventById(eventId: Long): Flow<Event?> {
         return eventDao.getEventById(eventId)
     }
+
+    fun getUniqueCategoriesForUser(userId: Long): Flow<List<String>> {
+        return eventDao.getUniqueCategoriesForUser(userId)
+    }
+
+    fun getEvents(userId: Long, searchQuery: String, category: String?): Flow<List<Event>> {
+        return eventDao.searchAndFilterEventsForUser(userId, searchQuery, category)
+    }
 }

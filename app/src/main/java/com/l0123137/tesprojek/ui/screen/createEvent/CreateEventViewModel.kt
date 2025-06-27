@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.l0123137.tesprojek.data.model.Event
 import com.l0123137.tesprojek.data.repository.EventRepository
 import com.l0123137.tesprojek.data.repository.SessionRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -20,6 +22,9 @@ class CreateEventViewModel(
 
     var uiState by mutableStateOf(CreateEventState())
         private set
+
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     val categoryList = listOf("Meeting", "Task", "Social", "Travelling")
 
@@ -42,7 +47,7 @@ class CreateEventViewModel(
     fun saveEvent() {
         //Validasi Input
         if (uiState.eventName.isBlank() || uiState.selectedCategory.isBlank() || uiState.date == null) {
-            uiState = uiState.copy(errorMessage = "Please fill all required fields.")
+            uiState = uiState.copy(errorMessage = "Field Tidak Boleh Kosong.")
             return
         }
 
@@ -50,7 +55,7 @@ class CreateEventViewModel(
             val loggedInUserId = sessionRepository.getSession().first()?.loggedInUserId
 
             if(loggedInUserId == null){
-                uiState = uiState.copy(errorMessage = "Error: No user is logged in.")
+                uiState = uiState.copy(errorMessage = "Error: User Tidak Login.")
                 return@launch
             }
 
@@ -65,9 +70,9 @@ class CreateEventViewModel(
 
             try{
                 eventRepository.insertEvent(newEvent)
-                uiState = uiState.copy(isEventSaved = true)
+                _snackbarMessage.emit("Event berhasil dibuat!")
             } catch(e: Exception){
-                uiState = uiState.copy(errorMessage = "Failed to save event: ${e.message}")
+                uiState = uiState.copy(errorMessage = "Gagal untuk menyimpan event: ${e.message}")
             }
         }
     }

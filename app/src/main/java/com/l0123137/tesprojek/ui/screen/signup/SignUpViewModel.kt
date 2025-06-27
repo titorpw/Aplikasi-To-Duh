@@ -9,6 +9,8 @@ import com.l0123137.tesprojek.data.model.User
 import com.l0123137.tesprojek.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import com.l0123137.tesprojek.ui.screen.signup.SignUpState
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import org.mindrot.jbcrypt.BCrypt
 import java.time.ZoneId
 
@@ -18,6 +20,9 @@ class SignUpViewModel(
 
     var uiState by mutableStateOf(SignUpState())
         private set
+
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     fun onFirstNameChange(value: String) {
         uiState = uiState.copy(firstName = value, firstNameError = value.isBlank())
@@ -46,10 +51,7 @@ class SignUpViewModel(
         )
     }
 
-    fun onSubmit(
-        onSuccess: () -> Unit,
-        onError: (String) -> Unit
-    ) {
+    fun onSubmit() {
         val isValid = listOf(
             uiState.firstName.isNotBlank(),
             uiState.lastName.isNotBlank(),
@@ -63,12 +65,16 @@ class SignUpViewModel(
             onFirstNameChange(uiState.firstName)
             onLastNameChange(uiState.lastName)
             onUsernameChange(uiState.username)
-            uiState = uiState.copy(bornDateError = uiState.bornDate == null)
+            uiState = uiState.copy(
+                bornDateError = uiState.bornDate == null,
+                errorMessage = "Tolong isi field dengan benar."
+            )
             onPasswordChange(uiState.password)
             onConfirmPasswordChange(uiState.confirmPassword)
-            onError("Please fill all fields correctly.")
             return
         }
+
+        uiState = uiState.copy(errorMessage = null)
 
         viewModelScope.launch {
             try {
@@ -81,9 +87,13 @@ class SignUpViewModel(
                 )
 
                 userRepository.insertUser(newUser)
-                onSuccess()
+
+                // Mengirim sinyal sukses melalui Flow
+                _snackbarMessage.emit("Registrasi berhasil!")
+
             } catch (e: Exception) {
-                onError("Failed to save user data: ${e.message}")
+                // Menampilkan error di UI melalui state
+                uiState = uiState.copy(errorMessage = "Failed to save user data: ${e.message}")
             }
         }
     }

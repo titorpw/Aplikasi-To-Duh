@@ -37,4 +37,19 @@ interface EventDao {
 
     @Query("SELECT * FROM events WHERE id = :eventId")
     fun getEventById(eventId: Long): Flow<Event?>
+
+    @Query("SELECT * FROM events WHERE user_id = :userId AND category = :category ORDER BY date ASC")
+    fun getEventsByCategoryForUser(userId: Long, category: String): Flow<List<Event>>
+
+    @Query("SELECT DISTINCT category FROM events WHERE user_id = :userId ORDER BY category ASC")
+    fun getUniqueCategoriesForUser(userId: Long): Flow<List<String>>
+
+    @Query("""
+        SELECT * FROM events
+        WHERE user_id = :userId
+        AND name LIKE '%' || :searchQuery || '%'
+        AND (:category IS NULL OR category = :category)
+        ORDER BY date ASC
+    """)
+    fun searchAndFilterEventsForUser(userId: Long, searchQuery: String, category: String?): Flow<List<Event>>
 }

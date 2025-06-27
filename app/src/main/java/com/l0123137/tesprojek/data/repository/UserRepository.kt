@@ -39,4 +39,14 @@ class UserRepository (private val userDao: UserDao){
     fun getUserByUsername(username: String): Flow<User?> {
         return userDao.getUserByUsername(username)
     }
+
+    /**
+     * FUNGSI BARU: Mengambil data pengguna berdasarkan ID.
+     * Diperlukan untuk fitur pengingat ulang tahun.
+     * @param userId ID dari pengguna yang dicari.
+     * @return Flow yang berisi objek User atau null.
+     */
+    fun getUserById(userId: Long): Flow<User?> {
+        return userDao.getUserById(userId)
+    }
 }

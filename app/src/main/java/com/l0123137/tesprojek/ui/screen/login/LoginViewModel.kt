@@ -32,7 +32,7 @@ class LoginViewModel(
 
         // Validasi input dasar
         if (uiState.username.isBlank() || uiState.password.isBlank()) {
-            uiState = uiState.copy(errorMessage = "Username and password cannot be empty.")
+            uiState = uiState.copy(errorMessage = "Username dan password tidak boleh kosong.")
             return
         }
 
@@ -40,13 +40,13 @@ class LoginViewModel(
             val user = userRepository.getUserByUsername(uiState.username).first()
 
             if (user == null){
-                uiState = uiState.copy(errorMessage = "Incorrect username or password.")
+                uiState = uiState.copy(errorMessage = "Username atau Password salah!.")
             } else{
                 if(BCrypt.checkpw(uiState.password, user.passwordHash)){
-                    sessionRepository.saveLoginSession(user.id)
+                    sessionRepository.saveSession(user.id)
                     onSuccess()
                 }else{
-                    uiState = uiState.copy(errorMessage = "Incorrect username or password.")
+                    uiState = uiState.copy(errorMessage = "Username atau Password salah!.")
                 }
             }
         }
