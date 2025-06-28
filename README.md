@@ -16,7 +16,7 @@ Metode ini cocok jika Anda hanya ingin mencoba aplikasi secara langsung di ponse
     * Buka repositori ini di GitHub.
     * Navigasi ke folder `app/release/`.
     * Klik pada file `To-Duh.apk` (atau nama file `.apk` lainnya yang ada di sana).
-    * Di halaman selanjutnya, klik tombol **"Download"** untuk mengunduh file ke komputer atau langsung ke ponsel Anda.
+    * Di halaman selanjutnya, cari dan klik link bertuliskan "View raw". Proses unduhan akan dimulai secara otomatis.
 
 2.  **Pindahkan ke Ponsel (Jika Perlu)**
     * Jika Anda mengunduhnya ke komputer, pindahkan file `.apk` yang sudah diunduh ke penyimpanan internal ponsel Android Anda menggunakan kabel USB.
