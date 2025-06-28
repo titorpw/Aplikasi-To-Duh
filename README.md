@@ -42,7 +42,8 @@ Metode ini ditujukan jika Anda ingin membuka, memeriksa, dan menjalankan seluruh
 
 1.  **Clone Repositori**
     * Buka terminal atau Command Prompt dan jalankan perintah berikut:
-        ```git clone https://github.com/titorpw/Tes-Projek-PAB.git
+        ```bash
+              git clone https://github.com/titorpw/Tes-Projek-PAB.git
         ```
     * *Alternatif:* Di halaman utama repositori GitHub, klik tombol hijau **"<> Code"** lalu pilih **"Download ZIP"** dan ekstrak di komputer Anda.
 
