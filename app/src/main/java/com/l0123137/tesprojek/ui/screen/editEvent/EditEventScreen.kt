@@ -178,7 +178,7 @@ fun EditEventScreen(
                         containerColor = Color(0xFF007ACC)
                     )
                 ) {
-                    Text("Save Changes", color = Color.White)
+                    Text("Save", color = Color.White)
                 }
             }
         }

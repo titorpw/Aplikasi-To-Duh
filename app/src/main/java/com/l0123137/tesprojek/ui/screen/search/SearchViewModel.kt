@@ -15,26 +15,28 @@ class SearchViewModel(
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
 
     @OptIn(FlowPreview::class)
-    val uiState: StateFlow<SearchState> = _searchQuery
-        .debounce(300)
-        .combine(sessionRepository.getSession()) { query, session ->
-            Pair(query, session)
+    val uiState: StateFlow<SearchState> = sessionRepository.getSession()
+        .combine(_searchQuery.debounce(300)) { session, query ->
+            Pair(session, query)
         }
-        .flatMapLatest { (query, session) ->
+        .flatMapLatest { (session, query) ->
             if (query.isBlank()) {
-                flowOf(SearchState(query = query, results = emptyList()))
-            } else {
-                val userId = session?.loggedInUserId
-                if (userId != null) {
-                    eventRepository.searchEventsForUser(query, userId)
-                        .map { results -> SearchState(query = query, results = results) }
-                } else {
-                    flowOf(SearchState(query = query, results = emptyList()))
-                }
+                return@flatMapLatest flowOf(SearchState(query = query, results = emptyList()))
             }
+
+            val userId = session?.loggedInUserId
+            if (userId == null) {
+                return@flatMapLatest flowOf(SearchState(query = query, results = emptyList()))
+            }
+
+            // Jika ada query dan user, baru lakukan pencarian
+            eventRepository.searchEventsForUser(query, userId)
+                .map { results -> SearchState(query = query, results = results, isLoading = false) }
         }
+        .onStart { emit(SearchState(isLoading = true)) }
         .catch { throwable ->
             emit(SearchState(errorMessage = throwable.message))
         }

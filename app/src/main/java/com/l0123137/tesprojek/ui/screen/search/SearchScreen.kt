@@ -14,6 +14,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.l0123137.tesprojek.ToDuhApplication
 import com.l0123137.tesprojek.ui.ViewModelFactory
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun SearchScreen(
@@ -31,9 +34,11 @@ fun SearchScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    val searchQuery by viewModel.searchQuery.collectAsState()
+
     Column(modifier = Modifier.padding(16.dp)) {
         OutlinedTextField(
-            value = uiState.query,
+            value = searchQuery,
             onValueChange = { viewModel.onQueryChange(it) },
             label = { Text("Cari event...") },
             modifier = Modifier.fillMaxWidth(),
@@ -42,34 +47,50 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn {
-            items(uiState.results, key = { it.id }) { event ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .clickable {
-                            navController.navigate("edit_event/${event.id}")
-                        }
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = event.name, style = MaterialTheme.typography.titleMedium)
-                        event.description?.let {
-                            Text(text = it, style = MaterialTheme.typography.bodyMedium)
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (uiState.errorMessage != null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: ${uiState.errorMessage}")
+            }
+        } else {
+            LazyColumn {
+                items(uiState.results, key = { it.id }) { event ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .clickable {
+                                navController.navigate("edit_event/${event.id}")
+                            }
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(text = event.name, style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                text = "Kategori: ${event.category}",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                            Text(
+                                text = sdf.format(Date(event.date)),
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         }
                     }
                 }
-            }
 
-            if (uiState.query.isNotBlank() && uiState.results.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Tidak ada event ditemukan.")
+                if (searchQuery.isNotBlank() && uiState.results.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Tidak ada event ditemukan untuk '$searchQuery'.")
+                        }
                     }
                 }
             }
