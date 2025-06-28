@@ -7,7 +7,7 @@ import com.l0123137.tesprojek.data.model.User
 import com.l0123137.tesprojek.data.repository.EventRepository
 import com.l0123137.tesprojek.data.repository.SessionRepository
 import com.l0123137.tesprojek.data.repository.UserRepository
-import com.l0123137.tesprojek.ui.screen.EventListState
+import com.l0123137.tesprojek.ui.screen.eventList.EventListState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

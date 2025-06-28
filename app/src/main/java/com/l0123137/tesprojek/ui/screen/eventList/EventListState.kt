@@ -1,4 +1,4 @@
-package com.l0123137.tesprojek.ui.screen
+package com.l0123137.tesprojek.ui.screen.eventList
 
 import com.l0123137.tesprojek.data.model.Event
 
